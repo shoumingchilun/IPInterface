@@ -1,0 +1,12 @@
+server:
+  port: 8000
+logging:
+  file:
+    name: IPInterface
+gateway_verify:
+  enable: true
+  enable_ip_verify: true
+  enable_ip_header: true
+  ip: 192.168.146.1
+  headerKey: gateway
+  headerValue: 1
