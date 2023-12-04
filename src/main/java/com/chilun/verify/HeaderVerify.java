@@ -1,6 +1,6 @@
 package com.chilun.verify;
 
-import org.aspectj.lang.JoinPoint;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Aspect
 @Component
+@Slf4j
 public class HeaderVerify {
     @Value("${gateway_verify.enable}")
     private boolean enable;
@@ -32,15 +33,16 @@ public class HeaderVerify {
 
     @Before("execution(* com.chilun.controller.AnalysisController.*(..))")
     public void verifyFrom() throws Exception {
-//        System.out.println("切入");
         //获得参数：请求
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        //进行验证：ip错误或指定header不存在
-        if (enable) {//进入校验条件：启用校验
+        //进行验证：ip错误或指定header不存在；进入校验条件：启用校验
+        if (enable) {
             if (enableIP && !request.getRemoteAddr().equals(ip)) {
+                log.info("Verify IP Failure!");
                 throw new Exception("Verify IP Failure!");
             }
             if (enableHeader && !request.getHeader(headerKey).equals(headerValue)) {
+                log.info("Verify Header Failure!");
                 throw new Exception("Verify Header Failure!");
             }
         }
